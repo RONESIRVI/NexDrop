@@ -1,634 +1,421 @@
-/* Base styles and light mode variables */
+/* Premium Pro UI Style */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
 :root {
-    --app-background: #F5F5F5;
-    --card-background: #FFFFFF;
-    --primary-color: #1976D2;
-    --primary-gradient-start: #1976D2;
-    --primary-gradient-end: #26A69A;
-    /* Cyan accent */
-    --text-primary: #212121;
-    --text-secondary: #757575;
-    --button-background: #E3F2FD;
-    /* Light blue */
-    --button-text: #1976D2;
-    --white: #FFFFFF;
-    /* Ensures header text is white in light mode */
-    --divider-color: #E0E0E0;
-    --success-color: #4CAF50;
-    --error-color: #F44336;
-    --shadow-light: rgba(0, 0, 0, 0.05);
-    --shadow-medium: rgba(0, 0, 0, 0.1);
+    --bg-color: #f8fafc;
+    --card-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --accent-color: #6366f1;
+    --accent-hover: #4f46e5;
+    --accent-gradient: linear-gradient(135deg, #6366f1, #a855f7);
+    --danger: #ef4444;
+    --danger-hover: #dc2626;
+    --orb-1: #e0e7ff;
+    --orb-2: #fae8ff;
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
 }
 
-/* Dark mode variables - updated to resemble app's themes.xml/colors.xml */
 body.dark-mode {
-    --app-background: #121212;
-    --card-background: #1E1E1E;
-    --primary-color: #42A5F5;
-    /* Keeping a lighter primary for dark mode header for contrast */
-    --primary-gradient-start: #42A5F5;
-    --primary-gradient-end: #80CBC4;
-    --text-primary: #E0E0E0;
-    --text-secondary: #BDBDBD;
-    /* Updated from #B0B0B0 to #BDBDBD */
-    --button-background: #1E3A5F;
-    /* Updated from #2C3E50 to #1E3A5F */
-    --button-text: #90CAF9;
-    /* Updated from #BBDEFB to #90CAF9 */
-    --white: #FFFFFF;
-    /* Fixed: ensures header text is white on dark gradient */
-    --divider-color: #424242;
-    --success-color: #66BB6A;
-    /* Updated from #4CAF50 to #66BB6A */
-    --error-color: #EF5350;
-    /* Updated from #F44336 to #EF5350 */
-    --shadow-light: rgba(255, 255, 255, 0.05);
-    --shadow-medium: rgba(255, 255, 255, 0.1);
+    --bg-color: #020617;
+    --card-bg: rgba(15, 23, 42, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent-color: #8b5cf6;
+    --accent-hover: #a855f7;
+    --accent-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6, #d946ef);
+    --danger: #ef4444;
+    --danger-hover: #f87171;
+    --orb-1: #1e1b4b;
+    --orb-2: #0f172a;
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-/* General styles */
 body {
-    font-family: 'Inter', sans-serif;
-    /* Prefer Inter, fallback to sans-serif */
+    font-family: 'Outfit', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: var(--app-background);
+    background-color: var(--bg-color);
     color: var(--text-primary);
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-header {
-    /* Updated gradient angle to 45deg to match app's taskbar */
-    background: linear-gradient(45deg, var(--primary-gradient-start), var(--primary-gradient-end));
-    color: var(--white);
-    /* Ensures text is white in both themes for contrast with gradient */
-    padding: 1.5rem 1rem;
-    text-align: center;
-    box-shadow: 0 2px 4px var(--shadow-medium);
+    overflow-x: hidden;
     position: relative;
-    /* For theme toggle button */
+    transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-header h1 {
+/* Animated Background Orbs */
+.bg-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: -1;
+    opacity: 0.8;
+    animation: float 20s infinite ease-in-out alternate;
+}
+
+.orb-1 {
+    width: 500px;
+    height: 500px;
+    background: var(--orb-1);
+    top: -100px;
+    left: -100px;
+    transition: background 0.5s ease;
+}
+
+.orb-2 {
+    width: 400px;
+    height: 400px;
+    background: var(--orb-2);
+    bottom: -50px;
+    right: -100px;
+    animation-delay: -10s;
+    transition: background 0.5s ease;
+}
+
+@keyframes float {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(50px, 50px) scale(1.1); }
+}
+
+/* Glassmorphism Classes */
+.glass-header {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.glass-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+}
+
+/* Header */
+.logo-container h1 {
     margin: 0;
     font-size: 2.5rem;
     font-weight: 700;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
 }
 
-header p {
-    margin: 0.5rem 0 0;
-    font-size: 1rem;
-    opacity: 0.9;
+.tagline {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
 .theme-toggle-button {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: none;
-    border: none;
-    color: var(--white);
-    font-size: 1.5rem;
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    font-size: 1.2rem;
     cursor: pointer;
-    padding: 0.5rem;
     border-radius: 50%;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    width: 45px;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    transition: all 0.3s ease;
 }
 
 .theme-toggle-button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    transform: scale(1.05);
+    background: var(--glass-border);
+    transform: rotate(15deg) scale(1.05);
 }
 
+/* Layout */
 main {
     flex: 1;
-    /* Adjusted max-width for more horizontal space */
-    max-width: 1200px;
-    /* Increased from 900px */
-    margin: 2rem auto;
-    padding: 0 1rem;
-    width: 100%;
-    box-sizing: border-box;
+    max-width: 1100px;
+    margin: 3rem auto;
+    width: 90%;
 }
 
-section {
-    background-color: var(--card-background);
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px var(--shadow-light);
-    margin-bottom: 2rem;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
 }
 
 h2 {
-    color: var(--primary-color);
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    font-size: 1.6rem;
-    border-bottom: 2px solid var(--divider-color);
-    padding-bottom: 0.5rem;
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.gradient-text {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 /* Drop Zone */
 #drop-zone {
-    border: 2px dashed var(--divider-color);
-    border-radius: 10px;
-    padding: 3rem 1.5rem;
+    border: 2px dashed var(--accent-color);
+    border-radius: 12px;
+    padding: 4rem 2rem;
     text-align: center;
     cursor: pointer;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
     position: relative;
-    /* For file input positioning */
-    color: var(--text-secondary);
-    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    background: rgba(99, 102, 241, 0.03);
 }
 
-#drop-zone.dragover {
-    border-color: var(--primary-color);
-    /* Using rgba with fallback for primary-color-rgb */
-    background-color: rgba(25, 118, 210, 0.05);
-    /* Fallback for primary-color-rgb */
+#drop-zone:hover, #drop-zone.dragover {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: var(--accent-hover);
+    transform: scale(1.01);
+}
+
+.drop-zone-content {
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.upload-icon {
+    width: 48px;
+    height: 48px;
+    color: var(--accent-color);
+    transition: transform 0.3s ease;
+}
+
+#drop-zone:hover .upload-icon {
+    transform: translateY(-5px);
+}
+
+#drop-zone p {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin: 0;
 }
 
 #drop-zone input[type="file"] {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
+    top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0; cursor: pointer;
 }
 
-/* General Button Style (used for modal and theme toggle) */
-button {
-    background-color: var(--button-background);
-    color: var(--button-text);
+/* Buttons */
+.glow-btn {
+    background: var(--accent-gradient);
+    color: white;
     border: none;
-    padding: 0.8rem 1.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.glow-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+
+.glow-btn.red-glow {
+    background: var(--danger);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.glow-btn.red-glow:hover {
+    background: var(--danger-hover);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+}
+
+/* Icon Buttons */
+.icon-button {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    padding: 0.5rem;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-    box-shadow: 0 2px 4px var(--shadow-light);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-button:hover {
-    background-color: var(--primary-color);
-    color: var(--white);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px var(--shadow-medium);
+.icon-button:hover {
+    background: var(--glass-border);
+    color: var(--accent-color);
 }
 
-/* Table Styles */
+.icon-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+.delete-button:hover { color: var(--danger); }
+.download-icon:hover { color: var(--accent-color); }
+
+/* Table */
 .table-container {
     overflow-x: auto;
-    border-radius: 8px;
-    border: 1px solid var(--divider-color);
-    box-shadow: 0 2px 8px var(--shadow-light);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.02);
 }
 
 #files-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.95rem;
-    table-layout: fixed;
-    /* Ensures columns respect widths */
-}
-
-#files-table th,
-#files-table td {
     text-align: left;
-    padding: 10px 15px;
-    /* Reduced padding for compactness */
-    border-bottom: 1px solid var(--divider-color);
-    /* Ensure text doesn't wrap and shows ellipsis if too long */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
-/* Optimized column widths for a more spacious and readable table */
-/* 1:checkbox */
-#files-table th:nth-child(1),
-#files-table td:nth-child(1) {
-    width: 1%;
-}
-
-
-#files-table th:nth-child(2),
-#files-table td:nth-child(2) {
-    width: 30%;
-}
-
-/* Name */
-#files-table th:nth-child(3),
-#files-table td:nth-child(3) {
-    width: 12%;
-}
-
-/* Size */
-#files-table th:nth-child(4),
-#files-table td:nth-child(4) {
-    width: 23%;
-}
-
-/* Last Modified */
-#files-table th:nth-child(5),
-#files-table td:nth-child(5) {
-    width: 20%;
-}
-
-/* Type */
-#files-table th:nth-child(6),
-#files-table td:nth-child(6) {
-    width: 15%;
-    text-align: right;
-}
-
-/* Actions */
-
-
-#files-table thead th {
-    background-color: var(--primary-color);
-    color: var(--white);
+#files-table th {
+    background: rgba(0,0,0,0.03);
+    padding: 1rem;
     font-weight: 600;
+    color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+body.dark-mode #files-table th { background: rgba(255,255,255,0.03); }
+
+#files-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--glass-border);
+    white-space: nowrap;
+    color: var(--text-primary);
 }
 
-#files-table tbody tr:nth-child(even) {
-    /* Using rgba with fallback for primary-color-rgb */
-    background-color: rgba(25, 118, 210, 0.03);
-    /* Fallback for primary-color-rgb */
+#files-table tbody tr {
+    transition: background 0.2s ease;
 }
 
 #files-table tbody tr:hover {
-    /* Using rgba with fallback for primary-color-rgb */
-    background-color: rgba(25, 118, 210, 0.1);
-    /* Stronger tint on hover */
+    background: rgba(99, 102, 241, 0.05);
 }
 
-#no-files-message {
-    text-align: center;
-    color: var(--text-secondary);
-    padding: 1.5rem;
-    margin-top: 1rem;
-    border: 1px dashed var(--divider-color);
-    border-radius: 8px;
-    background-color: var(--card-background);
+#files-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
-/* Action Icons (visible always) */
-.action-icons-container {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: flex-end;
-    /* Align icons to the right within the cell */
-    width: 100%;
-    /* Ensure container takes full width */
-}
-
-.icon-button {
-    background: none;
-    /* No background by default */
-    border: 1px solid transparent;
-    /* Transparent border for subtle hover effect */
-    border-radius: 6px;
-    padding: 0.5rem;
+/* Checkbox styling */
+input[type="checkbox"] {
+    accent-color: var(--accent-color);
+    width: 18px; height: 18px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease, color 0.2s ease;
-    color: var(--text-secondary);
-    /* Default icon color */
-    text-decoration: none;
-    /* For download links */
 }
 
-.icon-button:hover {
-    background-color: var(--button-background);
-    /* Subtle background on hover */
-    border-color: var(--primary-color);
-    transform: translateY(-1px);
-}
-
-.delete-button{
-background-color: var(--error-color);
-}
-
-.download-icon:hover {
-    color: var(--primary-color);
-    /* Download icon becomes primary color on hover */
-}
-
-.delete-icon:hover {
-    color: var(--error-color);
-    /* Delete icon becomes red on hover */
-    border-color: var(--error-color);
-}
-.header-container {
-    display: flex; /* Enable Flexbox */
-    justify-content: space-between; /* Puts space between the h2 and the button div */
-    align-items: center; /* Vertically aligns items in the middle */
-    margin-bottom: 1rem; /* Maintains the spacing below the header */
-    padding: 0 15px; /* Add some padding to the sides */
-}
-
-#files-actions {
-    /* Remove inline styles here, flexbox handles alignment */
-    margin-bottom: 0; /* Reset margin if inherited from elsewhere */
-}
-
-/* Styling for the Download All as Zip button */
-#download-all-zip-button {
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-    box-shadow: 0 2px 4px var(--shadow-light);
-    white-space: nowrap; /* Prevent button text from wrapping */
-}
-
-#download-all-zip-button:hover {
-    background-color: var(--primary-gradient-end);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px var(--shadow-medium);
-}
-
-
-
-/* SVG icon styling */
-.icon-button svg {
-    width: 18px;
-    height: 18px;
-    fill: currentColor;
-    /* Inherit color from parent button */
-    stroke: currentColor;
-    /* For icons that use stroke */
-    stroke-width: 1.5;
-    /* Default stroke width for icons */
-    vertical-align: middle;
-    /* Align icons nicely with text if any */
-}
-
-
-/* Upload Progress */
-#upload-progress-container {
-    margin-top: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.progress-bar-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    color: var(--text-primary);
-}
-
-.progress-bar-item span:first-child {
-    font-weight: 500;
-    color: var(--text-primary);
-}
-
+/* Progress Bar */
+#upload-progress-container { margin-top: 1.5rem; }
+.progress-bar-item { margin-bottom: 1rem; font-size: 0.9rem; font-weight: 500;}
 .progress-bar {
     width: 100%;
-    background-color: var(--divider-color);
-    border-radius: 5px;
+    height: 8px;
+    background: var(--glass-border);
+    border-radius: 4px;
     overflow: hidden;
-    height: 10px;
+    margin-top: 0.5rem;
 }
-
 .progress-bar-fill {
     height: 100%;
+    background: var(--accent-gradient);
     width: 0%;
-    background-color: var(--primary-color);
-    border-radius: 5px;
-    transition: width 0.4s ease-in-out, background-color 0.3s ease;
+    transition: width 0.3s ease;
 }
 
-.progress-bar-status {
-    text-align: right;
-    font-weight: 500;
-    margin-top: 0.2rem;
+/* Empty State */
+#no-files-message {
+    text-align: center;
+    padding: 3rem;
     color: var(--text-secondary);
+    font-size: 1.1rem;
 }
+#no-files-message svg { margin-bottom: 1rem; opacity: 0.5; }
 
 /* Footer */
 footer {
     text-align: center;
-    padding: 1.5rem 1rem;
+    padding: 2rem;
     color: var(--text-secondary);
     font-size: 0.9rem;
-    border-top: 1px solid var(--divider-color);
-    margin-top: 2rem;
-    background-color: var(--card-background);
-    box-shadow: 0 -2px 4px var(--shadow-light);
+    margin-top: auto;
 }
 
-/* Custom Modal for Confirmation */
+/* Modal */
 .modal-overlay {
-    display: none;
-    /* Hidden by default */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(3px);
+    display: none; position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
     z-index: 1000;
-    justify-content: center;
-    align-items: center;
-    transition: opacity 0.3s ease;
-    opacity: 0;
-    /* For fade-in effect */
+    justify-content: center; align-items: center;
+    opacity: 0; transition: opacity 0.3s ease;
 }
-
-.modal-overlay.active {
-    display: flex;
-    opacity: 1;
-}
-
+.modal-overlay.active { display: flex; opacity: 1; }
 .modal-content {
-    background-color: var(--card-background);
-    padding: 1.5rem;
-    /* Reduced padding */
-    border-radius: 12px;
-    box-shadow: 0 8px 20px var(--shadow-medium);
-    max-width: 350px;
-    /* Reduced max-width for a more compact modal */
+    max-width: 400px;
     width: 90%;
     text-align: center;
-    transform: translateY(-20px);
+    transform: scale(0.9);
     transition: transform 0.3s ease;
 }
+.modal-overlay.active .modal-content { transform: scale(1); }
+.modal-buttons { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
+.modal-checkbox-container { margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary); }
 
-.modal-overlay.active .modal-content {
-    transform: translateY(0);
-}
+/* Action Icons Container */
+.action-icons-container { display: flex; gap: 0.5rem; }
 
-.modal-content p {
-    font-size: 1rem;
-    /* Slightly reduced font size */
-    margin-bottom: 1rem;
-    /* Reduced margin */
-    color: var(--text-primary);
-}
-
-.modal-checkbox-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    /* Space before buttons */
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
-
-.modal-checkbox-container input[type="checkbox"] {
-    cursor: pointer;
-    width: 18px;
-    /* Standardize checkbox size */
-    height: 18px;
-    accent-color: var(--primary-color);
-    /* Native checkbox color */
-}
-
-
-.modal-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-}
-
-/* Responsive adjustments */
+/* Responsive Mobile Layout */
 @media (max-width: 768px) {
-    header h1 {
-        font-size: 2rem;
-    }
-
-    main {
-        margin: 1.5rem auto;
-        padding: 0 0.8rem;
-    }
-
-    section {
-        padding: 1rem;
-    }
-
-    h2 {
-        font-size: 1.4rem;
-        margin-bottom: 1rem;
-    }
-
-    #drop-zone {
-        padding: 2rem 1rem;
-        font-size: 1rem;
-    }
-
-    .icon-button {
-        padding: 0.4rem;
-        /* Smaller icons on mobile */
-    }
-
-    .icon-button svg {
-        width: 16px;
-        height: 16px;
-    }
-
-    /*
-      Mobile Table Redesign
-      - Hides the header and transforms rows into cards for better mobile usability.
-    */
-    .table-container {
-        border: none;
-        box-shadow: none;
-    }
-
-    #files-table {
-        table-layout: auto; /* Reset table layout */
-    }
-
-    /* Hide table headers visually, but keep them for screen readers */
-    #files-table thead {
-        border: none;
-        clip: rect(0 0 0 0);
-        height: 1px;
-        margin: -1px;
-        overflow: hidden;
-        padding: 0;
-        position: absolute;
-        width: 1px;
-    }
-
+    .glass-header { padding: 1rem; }
+    .logo-container h1 { font-size: 2rem; }
+    main { margin: 1.5rem auto; width: 95%; }
+    .glass-card { padding: 1.5rem; }
+    #files-table thead { display: none; }
     #files-table tr {
-        display: block;
-        border: 1px solid var(--divider-color);
-        border-radius: 8px; /* Makes each row a "card" */
-        margin-bottom: 1rem;
-        box-shadow: 0 2px 4px var(--shadow-light);
-        background-color: var(--card-background); /* Ensure cards have a background */
+        display: block; border: 1px solid var(--glass-border);
+        border-radius: 12px; margin-bottom: 1rem;
+        background: rgba(255,255,255,0.02);
     }
-
-    #files-table tbody tr {
-        background-color: var(--card-background);
-    }
-
     #files-table td {
-        display: block;
-        text-align: right; /* Align cell content (the value) */
-        font-size: 0.9rem;
-        padding: 12px 15px 12px 50%; /* Top, Right, Bottom, Left padding */
-        position: relative;
-        white-space: nowrap; /* Allow text to wrap */
-        text-overflow: ellipsis;
-        border-bottom: 1px solid var(--divider-color);
+        display: flex; justify-content: space-between; align-items: center;
+        text-align: right; border-bottom: 1px solid var(--glass-border);
     }
-
-    #files-table td:last-child {
-        border-bottom: none; /* No border for the last cell in a card */
-    }
-
-    /* Use the data-label attribute to create a pseudo-header */
-    #files-table td:before {
-        content: attr(data-label);
-        position: absolute;
-        left: 15px;
-        width: 45%;
-        padding-right: 10px;
-        white-space: nowrap;
-        text-align: left;
-        font-weight: 600;
-        color: var(--primary-color); /* Make labels stand out */
-    }
-
-    /* Ensure the actions container aligns correctly within the new layout */
-    #files-table td .action-icons-container {
-        justify-content: flex-end; /* Aligns buttons to the right */
-        padding: 0;
-    }
-
-    /* set widths for phone view */
-    #files-table th:nth-child(n),
-    #files-table td:nth-child(n) {
-        width: auto;
-        max-width: 60vw; /* Prevents overflow on phones */
-    }
+    #files-table td::before { content: attr(data-label); font-weight: 600; color: var(--text-secondary); }
+    #files-table td:last-child { border-bottom: none; }
 }
-
