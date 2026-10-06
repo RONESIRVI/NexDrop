@@ -452,7 +452,7 @@ footer {
 .user-id-container label {
     display: block;
     font-size: 0.75rem;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.7);
     font-weight: 600;
     letter-spacing: 2px;
     margin-bottom: 0.5rem;
@@ -464,12 +464,16 @@ footer {
     background: rgba(255, 255, 255, 0.03);
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    color: var(--text-primary);
+    color: #ffffff;
     font-size: 1.1rem;
     padding: 1rem 1.2rem;
     font-family: inherit;
     transition: all 0.3s ease;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.premium-text-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .premium-text-input:focus {
@@ -492,7 +496,7 @@ footer {
     background: rgba(255, 255, 255, 0.03);
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
-    color: var(--text-primary);
+    color: #ffffff;
     font-size: 2.2rem;
     text-align: center;
     font-weight: 700;
