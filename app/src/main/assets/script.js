@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // PIN Lock elements
     const pinOverlay = document.getElementById('pin-lock-overlay');
+    const usernameInput = document.getElementById('username-input');
     const otpInputs = document.querySelectorAll('.otp-input');
     const pinSubmitBtn = document.getElementById('pin-submit-btn');
     const pinErrorMsg = document.getElementById('pin-error-msg');
@@ -484,6 +485,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // PIN Verification Logic
+    usernameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            otpInputs[0].focus();
+        }
+    });
+
     otpInputs.forEach((input, index) => {
         input.addEventListener('input', (e) => {
             if (e.target.value.length > 1) {
@@ -511,9 +518,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     async function verifyPin() {
+        const username = usernameInput.value.trim();
+        if (!username.startsWith('NEx2027')) {
+            pinErrorMsg.textContent = 'Invalid Secure ID. Must start with NEx2027';
+            pinErrorMsg.style.display = 'block';
+            usernameInput.focus();
+            return;
+        }
+
         let pin = '';
         otpInputs.forEach(input => pin += input.value);
-        if (pin.length !== 4) return;
+        if (pin.length !== 4) {
+            pinErrorMsg.textContent = 'Please enter the 4-digit PIN.';
+            pinErrorMsg.style.display = 'block';
+            return;
+        }
         
         pinSubmitBtn.disabled = true;
         pinSubmitBtn.textContent = 'AUTHENTICATING...';
