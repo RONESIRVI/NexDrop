@@ -172,7 +172,7 @@ class NetworkHelper(context: Context,
             .getNetworkInterfaces()
             .toList()
             .asSequence()
-            .filter { it.name.startsWith("wlan") || it.name.startsWith("ap") || it.name.startsWith("swlan")|| it.name.startsWith("wifi") }
+            .asSequence()
             .filter { it.isUp && !it.isLoopback }
             .toList()
         if (interfaces.isEmpty()) {
