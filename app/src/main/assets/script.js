@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // PIN Lock elements
     const pinOverlay = document.getElementById('pin-lock-overlay');
-    const pinInput = document.getElementById('pin-input');
+    const otpInputs = document.querySelectorAll('.otp-input');
     const pinSubmitBtn = document.getElementById('pin-submit-btn');
     const pinErrorMsg = document.getElementById('pin-error-msg');
 
@@ -484,12 +484,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // PIN Verification Logic
+    otpInputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            if (e.target.value.length > 1) {
+                e.target.value = e.target.value.slice(0, 1);
+            }
+            if (e.target.value !== '') {
+                if (index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                } else {
+                    verifyPin();
+                }
+            }
+        });
+        
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && e.target.value === '') {
+                if (index > 0) {
+                    otpInputs[index - 1].focus();
+                    otpInputs[index - 1].value = '';
+                }
+            } else if (e.key === 'Enter') {
+                verifyPin();
+            }
+        });
+    });
+
     async function verifyPin() {
-        const pin = pinInput.value.trim();
+        let pin = '';
+        otpInputs.forEach(input => pin += input.value);
         if (pin.length !== 4) return;
         
         pinSubmitBtn.disabled = true;
-        pinSubmitBtn.textContent = 'Verifying...';
+        pinSubmitBtn.textContent = 'AUTHENTICATING...';
         pinErrorMsg.style.display = 'none';
 
         try {
@@ -505,10 +532,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => pinOverlay.style.display = 'none', 500);
                 fetchFiles();
             } else {
-                pinErrorMsg.textContent = 'Incorrect PIN. Try again.';
+                pinErrorMsg.textContent = 'Invalid PIN. Access Denied.';
                 pinErrorMsg.style.display = 'block';
-                pinInput.value = '';
-                pinInput.focus();
+                otpInputs.forEach(input => input.value = '');
+                otpInputs[0].focus();
             }
         } catch (e) {
             pinErrorMsg.textContent = 'Network error.';
@@ -516,13 +543,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         pinSubmitBtn.disabled = false;
-        pinSubmitBtn.textContent = 'Unlock';
+        pinSubmitBtn.textContent = 'AUTHENTICATE';
     }
 
     pinSubmitBtn.addEventListener('click', verifyPin);
-    pinInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') verifyPin();
-    });
 
     // Initial load of files when the page is ready
     fetchFiles();

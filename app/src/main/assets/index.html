@@ -9,25 +9,31 @@
     <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body class="dark-mode">
-    <!-- PIN Lock Screen -->
     <div id="pin-lock-overlay" class="lock-overlay">
-        <div class="lock-card glass-card">
-            <svg viewBox="0 0 24 24" width="48" height="48" stroke="url(#gradient)" stroke-width="2" fill="none" style="margin-bottom: 1rem;">
-                <defs>
-                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#6366f1" />
-                        <stop offset="100%" stop-color="#a855f7" />
-                    </linearGradient>
-                </defs>
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-            <h2><span class="gradient-text">Device Locked</span></h2>
-            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Enter the 4-digit PIN shown on your phone.</p>
-            <div class="pin-input-container">
-                <input type="text" id="pin-input" maxlength="4" placeholder="••••" autocomplete="off">
+        <div class="lock-card premium-glass">
+            <div class="icon-pulse-container">
+                <svg viewBox="0 0 24 24" width="56" height="56" stroke="url(#gradient)" stroke-width="2" fill="none" class="pulse-icon">
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#6366f1" />
+                            <stop offset="100%" stop-color="#a855f7" />
+                        </linearGradient>
+                    </defs>
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
             </div>
-            <button id="pin-submit-btn" class="glow-btn" style="width: 100%; justify-content: center; margin-top: 1.5rem; font-size: 1.1rem; padding: 0.8rem;">Unlock</button>
+            <h2><span class="gradient-text">Connection Secured</span></h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">Enter the 4-digit PIN from your NexDrop app to establish a secure link.</p>
+            
+            <div class="otp-container">
+                <input type="text" class="otp-input" maxlength="1" autocomplete="off" autofocus>
+                <input type="text" class="otp-input" maxlength="1" autocomplete="off">
+                <input type="text" class="otp-input" maxlength="1" autocomplete="off">
+                <input type="text" class="otp-input" maxlength="1" autocomplete="off">
+            </div>
+
+            <button id="pin-submit-btn" class="glow-btn" style="width: 100%; justify-content: center; margin-top: 2rem; font-size: 1.1rem; padding: 1rem; border-radius: 12px; font-weight: 600; letter-spacing: 1px;">AUTHENTICATE</button>
             <p id="pin-error-msg" class="error-msg" style="color: var(--danger); margin-top: 1rem; display: none;"></p>
         </div>
     </div>
