@@ -496,23 +496,36 @@ class MainActivity : AppCompatActivity() {
                     val ip = request.ipAddress
                     val deferred = request.deferred
                     if (ipPermissionDialogs.containsKey(ip) || deferred.isCompleted) return@collect
-                    val dialog =
-                        MaterialAlertDialogBuilder(this@MainActivity).setTitle(getString(R.string.permission_request_title))
-                            .setMessage(getString(R.string.permission_request_message, ip))
-                            .setPositiveButton(getString(R.string.allow)) { _, _ ->
-                                deferred.complete(
-                                    true
-                                )
-                            }
-                            .setNegativeButton(getString(R.string.deny)) { _, _ ->
-                                deferred.complete(
-                                    false
-                                )
-                            }
-                            .setOnDismissListener {
-                                if (!deferred.isCompleted) deferred.complete(false)
-                                ipPermissionDialogs.remove(ip)
-                            }.create()
+                    val dialogView = layoutInflater.inflate(R.layout.dialog_ip_permission, null)
+                    val tvMessage = dialogView.findViewById<TextView>(R.id.tvPermissionMessage)
+                    val btnAllow = dialogView.findViewById<Button>(R.id.btnAllow)
+                    val btnDeny = dialogView.findViewById<Button>(R.id.btnDeny)
+
+                    tvMessage.text = getString(R.string.permission_request_message, ip)
+
+                    val dialog = MaterialAlertDialogBuilder(this@MainActivity, R.style.PremiumDialogTheme)
+                        .setView(dialogView)
+                        .setCancelable(false)
+                        .create()
+
+                    // Set rounded background for the dialog window itself
+                    dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+                    btnAllow.setOnClickListener {
+                        deferred.complete(true)
+                        dialog.dismiss()
+                    }
+
+                    btnDeny.setOnClickListener {
+                        deferred.complete(false)
+                        dialog.dismiss()
+                    }
+
+                    dialog.setOnDismissListener {
+                        if (!deferred.isCompleted) deferred.complete(false)
+                        ipPermissionDialogs.remove(ip)
+                    }
+
                     ipPermissionDialogs[ip] = dialog
                     dialog.show()
                 }
