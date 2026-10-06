@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var tvServerStatus: TextView
+    private lateinit var tvServerPin: TextView
 
     private lateinit var actvIps: AutoCompleteTextView
     private lateinit var tilIps: TextInputLayout
@@ -179,6 +180,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initViews() {
         tvServerStatus = findViewById(R.id.tvServerStatus)
+        tvServerPin = findViewById(R.id.tvServerPin)
         tilIps = findViewById(R.id.tilIps)
         actvIps = findViewById(R.id.actvIps)
         btnCopyIp = findViewById(R.id.btnCopyIp)
@@ -383,6 +385,7 @@ class MainActivity : AppCompatActivity() {
                             btnStartServer.visibility = View.GONE
                             btnStopServer.visibility = View.GONE
                             btnCopyIp.visibility = View.INVISIBLE
+                            tvServerPin.visibility = View.GONE
                         }
 
                         is ServerState.Running -> {
@@ -415,6 +418,9 @@ class MainActivity : AppCompatActivity() {
                             btnStartServer.visibility = View.GONE
                             btnStopServer.visibility = View.VISIBLE
                             btnCopyIp.visibility = View.VISIBLE
+                            
+                            tvServerPin.visibility = View.VISIBLE
+                            tvServerPin.text = "PIN: ${state.securityPin}"
                         }
 
                         ServerState.UserStopped,
@@ -434,6 +440,7 @@ class MainActivity : AppCompatActivity() {
                             btnStartServer.visibility = View.VISIBLE
                             btnStopServer.visibility = View.GONE
                             btnCopyIp.visibility = View.INVISIBLE
+                            tvServerPin.visibility = View.GONE
                         }
 
                         is ServerState.Error -> {
@@ -456,6 +463,7 @@ class MainActivity : AppCompatActivity() {
                             btnStartServer.visibility = View.VISIBLE
                             btnStopServer.visibility = View.GONE
                             btnCopyIp.visibility = View.INVISIBLE
+                            tvServerPin.visibility = View.GONE
                         }
                     }
                 }

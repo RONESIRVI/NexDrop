@@ -62,6 +62,9 @@ class FileServerService : Service(), SharedPreferences.OnSharedPreferenceChangeL
     var currentSharedFolderUri: Uri? = null
         private set
 
+    var currentPin: String = ""
+        private set
+
     @Volatile
     private var isActivityInForeground = false
     private val pendingNotificationRequests = mutableMapOf<String, CompletableDeferred<Boolean>>()
@@ -252,6 +255,8 @@ class FileServerService : Service(), SharedPreferences.OnSharedPreferenceChangeL
                     return@launch
                 }
 
+                currentPin = (1000..9999).random().toString()
+
                 val serviceProvider = { this@FileServerService }
                 ktorServer =
                     embeddedServer(CIO, port = Constants.SERVER_PORT, host = "0.0.0.0", module = {
@@ -262,7 +267,7 @@ class FileServerService : Service(), SharedPreferences.OnSharedPreferenceChangeL
                         start(wait = false)
                     }
 
-                _serverState.value = ServerState.Running(networkState, Constants.SERVER_PORT)
+                _serverState.value = ServerState.Running(networkState, Constants.SERVER_PORT, currentPin)
                 logger.i("Ktor Server started on $ipAddress:${Constants.SERVER_PORT}")
                 updateNotification()
             } catch (e: Exception) {

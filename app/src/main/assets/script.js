@@ -8,8 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeIcon = document.getElementById('theme-icon');
     const pasteButton = document.getElementById('paste-button');
     const downloadAllZipButton = document.getElementById('download-all-zip-button');
-
     const selectAllCheckbox = document.getElementById('select-all-checkbox');
+
+    // PIN Lock elements
+    const pinOverlay = document.getElementById('pin-lock-overlay');
+    const pinInput = document.getElementById('pin-input');
+    const pinSubmitBtn = document.getElementById('pin-submit-btn');
+    const pinErrorMsg = document.getElementById('pin-error-msg');
 
 
 
@@ -106,6 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchFiles() {
         try {
             const response = await fetch('/api/files');
+            if (response.status === 401) {
+                // PIN required
+                pinOverlay.style.display = 'flex';
+                return;
+            }
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('Error fetching files:', response.status, errorText);
@@ -466,6 +476,47 @@ document.addEventListener('DOMContentLoaded', () => {
         const files = [...selectedCheckboxes].map(cb => cb.dataset.fileName)
         downloadZip(files)
 
+    });
+
+    // PIN Verification Logic
+    async function verifyPin() {
+        const pin = pinInput.value.trim();
+        if (pin.length !== 4) return;
+        
+        pinSubmitBtn.disabled = true;
+        pinSubmitBtn.textContent = 'Verifying...';
+        pinErrorMsg.style.display = 'none';
+
+        try {
+            const response = await fetch('/api/verify-pin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pin: pin })
+            });
+
+            if (response.ok) {
+                // Success!
+                pinOverlay.style.opacity = '0';
+                setTimeout(() => pinOverlay.style.display = 'none', 500);
+                fetchFiles();
+            } else {
+                pinErrorMsg.textContent = 'Incorrect PIN. Try again.';
+                pinErrorMsg.style.display = 'block';
+                pinInput.value = '';
+                pinInput.focus();
+            }
+        } catch (e) {
+            pinErrorMsg.textContent = 'Network error.';
+            pinErrorMsg.style.display = 'block';
+        }
+        
+        pinSubmitBtn.disabled = false;
+        pinSubmitBtn.textContent = 'Unlock';
+    }
+
+    pinSubmitBtn.addEventListener('click', verifyPin);
+    pinInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') verifyPin();
     });
 
     // Initial load of files when the page is ready

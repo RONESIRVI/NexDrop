@@ -36,6 +36,8 @@ import io.ktor.server.request.receiveChannel
 import io.ktor.server.request.receiveMultipart
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.request.receiveText
+import io.ktor.server.request.path
+import io.ktor.server.request.uri
 import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
@@ -101,6 +103,29 @@ val IpAddressApprovalPlugin = createApplicationPlugin(name = "IpAddressApprovalP
             } else {
                 logger.d("IP Approval: IP $clientIp approved.")
             }
+        }
+    }
+}
+
+val PinProtectionPlugin = createApplicationPlugin(name = "PinProtectionPlugin") {
+    val serviceProvider = application.attributes[KEY_SERVICE_PROVIDER]
+    onCall { call ->
+        val path = call.request.path()
+        // Allow public access to assets, UI, verify endpoint, and ping
+        if (path == "/" || path.startsWith("/assets") || path == "/api/verify-pin" || path == "/api/ping") {
+            return@onCall
+        }
+
+        val service = serviceProvider() ?: return@onCall
+        val currentPin = service.currentPin
+        
+        if (currentPin.isEmpty()) return@onCall
+
+        val providedPin = call.request.cookies["auth_pin"]
+            ?: call.request.headers["Authorization"]?.removePrefix("Bearer ")
+            
+        if (providedPin != currentPin) {
+            call.respond(HttpStatusCode.Unauthorized, "Invalid PIN. Access Denied.")
         }
     }
 }
@@ -361,6 +386,7 @@ fun Application.ktorServer(
         }
     }
     install(IpAddressApprovalPlugin)
+    install(PinProtectionPlugin)
     install(ContentNegotiation) { json() }
 
     // Routing
@@ -391,6 +417,24 @@ fun Application.ktorServer(
             }
 
             route("/api") {
+                post("/verify-pin") {
+                    try {
+                        val requestBody = call.receiveText()
+                        val jsonObject = JSONObject(requestBody)
+                        val providedPin = jsonObject.optString("pin", "")
+                        
+                        val service = serviceProviderLambda()
+                        if (service != null && providedPin == service.currentPin) {
+                            call.response.cookies.append("auth_pin", providedPin, maxAge = 86400L, path = "/")
+                            call.respond(HttpStatusCode.OK, SuccessResponse("Valid PIN"))
+                        } else {
+                            call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Invalid PIN"))
+                        }
+                    } catch (e: Exception) {
+                        call.respond(HttpStatusCode.InternalServerError, ErrorResponse("Error: ${e.localizedMessage}"))
+                    }
+                }
+
                 get("/ping") {
                     call.respondText("pong")
                 }

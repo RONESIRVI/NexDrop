@@ -66,6 +66,18 @@ app:layout_constraintEnd_toEndOf="parent">
             android:textColor="?android:attr/textColorPrimary"/>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/tvServerPin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="PIN: ----"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="?attr/colorPrimary"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
