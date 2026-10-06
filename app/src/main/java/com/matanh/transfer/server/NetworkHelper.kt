@@ -174,7 +174,12 @@ class NetworkHelper(context: Context,
         val chosenWifi = wifiName?.let { name -> interfaces.find { it.name == name } }
         val wifiAddress = extractIp(chosenWifi)
 
-        val chosenHotspot = interfaces.find { it.name != chosenWifi?.name && extractIp(it) != null }
+        val otherInterfaces = interfaces.filter { it.name != chosenWifi?.name && extractIp(it) != null }
+        val chosenHotspot = otherInterfaces.find { 
+            it.name.startsWith("ap") || it.name.startsWith("wlan") || 
+            it.name.startsWith("swlan") || it.name.startsWith("rndis") || it.name.startsWith("wifi")
+        } ?: otherInterfaces.firstOrNull()
+        
         val hotspotIp = extractIp(chosenHotspot)?.hostAddress
 
         return IpInfo(wifiAddress, hotspotIp)
