@@ -63,8 +63,13 @@
                     </svg>
                     <p>Drag & drop files here or click to browse</p>
                 </div>
-                <input type="file" id="file-input" multiple>
             </div>
+            <div style="display: flex; justify-content: center; margin-top: 15px; gap: 15px;">
+                <button class="glow-btn" onclick="document.getElementById('file-input').click()">Upload File</button>
+                <button class="glow-btn" onclick="document.getElementById('folder-input').click()">Upload Folder</button>
+            </div>
+            <input type="file" id="file-input" multiple style="display: none;">
+            <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;">
             <div id="upload-progress-container"></div>
         </section>
 

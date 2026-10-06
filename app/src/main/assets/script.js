@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const dropZone = document.getElementById('drop-zone');
     const fileInput = document.getElementById('file-input');
+    const folderInput = document.getElementById('folder-input');
     const filesTableBody = document.querySelector('#files-table tbody');
     const uploadProgressContainer = document.getElementById('upload-progress-container');
     const noFilesMessage = document.getElementById('no-files-message');
@@ -309,10 +310,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fileInput.addEventListener('change', (event) => {
         const files = event.target.files;
-        if (files.length > 0) {
-            handleFiles(files);
-        }
-        // Clear the file input so the same file can be selected again
+        if (files.length > 0) handleFiles(files);
+        event.target.value = '';
+    });
+
+    folderInput.addEventListener('change', (event) => {
+        const files = event.target.files;
+        if (files.length > 0) handleFiles(files);
         event.target.value = '';
     });
 
@@ -324,7 +328,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function uploadFile(file) {
         const formData = new FormData();
-        formData.append('file', file, file.name);
+        const filePath = file.webkitRelativePath || file.name;
+        formData.append('file', file, filePath);
 
         const xhr = new XMLHttpRequest();
 

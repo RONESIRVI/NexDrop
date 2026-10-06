@@ -198,26 +198,38 @@ suspend fun handleFileUpload(
     notifyService: () -> Unit
 ): Pair<String?, String?> {
 
-    // 1. Sanitize and ensure unique filename
-    val sanitizedFileName = originalFileName.replace(Regex("""(^\\s+|\\s+\$|^\\.\\.|[\\/])"""), "_")
-    /*
-    ^\s+ - Leading whitespace
-    \s+$ - Trailing whitespace
-    ^\.\. - ".." at start
-    [\\/] - Path separators
-     */
+    // 1. Sanitize (keep forward slashes for directory parsing, remove backslashes and special traversal chars)
+    var path = originalFileName.replace(Regex("""(^\\s+|\\s+$|^\\.\\.)"""), "").replace("\\", "/")
+    while (path.startsWith("/")) path = path.drop(1)
+    if (path.isEmpty()) path = "uploaded_file"
 
-    // 2. Generate a unique filename
+    val parts = path.split("/")
+    val fileName = parts.last()
+    val sanitizedFileName = fileName.replace(Regex("""[\\/]"""), "_")
+
+    var currentDir = baseDocumentFile
+    // 2. Create nested directories if they don't exist
+    for (i in 0 until parts.size - 1) {
+        val dirName = parts[i].replace(Regex("""[\\/]"""), "_")
+        var nextDir = currentDir.findFile(dirName)
+        if (nextDir == null) {
+            nextDir = currentDir.createDirectory(dirName)
+            if (nextDir == null) return null to "Failed to create directory: $dirName"
+        }
+        currentDir = nextDir
+    }
+
+    // 3. Generate unique filename in the target directory
     val nameWithoutExt = sanitizedFileName.substringBeforeLast('.', sanitizedFileName)
     val extension = sanitizedFileName.substringAfterLast('.', "")
     val uniqueFileName =
-        FileUtils.generateUniqueFileName(baseDocumentFile, nameWithoutExt, extension)
+        FileUtils.generateUniqueFileName(currentDir, nameWithoutExt, extension)
 
-    // Always create with no specific mime (prevent the provider from adding a file extension)
+    // Always create with no specific mime
     val effectiveMimeType = ContentType.Application.OctetStream.toString()
-    val newFileDoc = baseDocumentFile.createFile(effectiveMimeType, uniqueFileName)
+    val newFileDoc = currentDir.createFile(effectiveMimeType, uniqueFileName)
     if (newFileDoc == null || !newFileDoc.canWrite()) {
-        logger.e("Failed to create document file for upload: $uniqueFileName")
+        logger.e("Failed to create document file for upload: $uniqueFileName in dir: ${currentDir.name}")
         return null to "Failed to create file."
     }
     // 5) Stream upload with a buffer
