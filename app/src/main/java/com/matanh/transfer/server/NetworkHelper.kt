@@ -164,46 +164,18 @@ class NetworkHelper(context: Context,
      * @return An [IpInfo] containing the nullable Wi‑Fi and hotspot IP addresses.
      */
     private fun findIpAddresses(wifiName:String?): IpInfo {
-        var wifiAddress: Inet4Address? = null
-        var hotspotIp: String? = null
-
-        // Collect all relevant interfaces (Wi‑Fi or hotspot)
-        val interfaces = NetworkInterface
-            .getNetworkInterfaces()
-            .toList()
-            .asSequence()
-            .asSequence()
+        val interfaces = NetworkInterface.getNetworkInterfaces().toList()
             .filter { it.isUp && !it.isLoopback }
-            .toList()
-        if (interfaces.isEmpty()) {
-            Timber.w("No Wi‑Fi or hotspot interfaces found")
-            return IpInfo(null, null)
-        }
-        val chosenWifi = wifiName?.let { name ->
-            interfaces.find { it.name == name } ?: run { Timber.e("Wi‑Fi IP on interface $name not found"); null }
-        }
-        // Determine the hotspot interface as the first other one
-        val chosenHotspot = interfaces.firstOrNull { it.name != chosenWifi?.name }
 
-        // Helper to extract IPv4
         fun extractIp(nif: NetworkInterface?): Inet4Address? = nif
-            ?.inetAddresses
-            ?.asSequence()
-            ?.filterIsInstance<Inet4Address>()
+            ?.inetAddresses?.toList()?.filterIsInstance<Inet4Address>()
             ?.find { !it.isLoopbackAddress }
 
-        // Extract IPs
-        wifiAddress = extractIp(chosenWifi).also {
-            if (it != null) Timber.i("Wi‑Fi on ${chosenWifi?.name} → ${it.hostAddress}")
-            else Timber.w("No IPv4 address on Wi‑Fi interface ${chosenWifi?.name}")
-        }
+        val chosenWifi = wifiName?.let { name -> interfaces.find { it.name == name } }
+        val wifiAddress = extractIp(chosenWifi)
 
-        hotspotIp = extractIp(chosenHotspot)?.hostAddress?.also {
-            Timber.i("Hotspot on ${chosenHotspot?.name} → $it")
-        } ?: run {
-            Timber.w("No hotspot interface or no IPv4 address on hotspot interface")
-            null
-        }
+        val chosenHotspot = interfaces.find { it.name != chosenWifi?.name && extractIp(it) != null }
+        val hotspotIp = extractIp(chosenHotspot)?.hostAddress
 
         return IpInfo(wifiAddress, hotspotIp)
     }
