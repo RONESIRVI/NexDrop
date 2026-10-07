@@ -519,8 +519,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function verifyPin() {
         const username = usernameInput.value.trim();
-        if (!username.toUpperCase().startsWith('NEX2027')) {
-            pinErrorMsg.textContent = 'Invalid Secure ID. Must start with NEx2027';
+        if (username.length === 0) {
+            pinErrorMsg.textContent = 'Please enter a Secure ID.';
             pinErrorMsg.style.display = 'block';
             usernameInput.focus();
             return;
