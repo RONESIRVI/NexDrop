@@ -148,8 +148,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.selectedFolderUri.observe(this) { uri ->
             currentSelectedFolderUri = uri
             if (uri != null) {
-                // If URI is valid, ensure the server is started with it
-                startFileServer(uri)
+                // Do not auto-start the server on launch. The user must press start.
                 lifecycleScope.launch {
                     shareHandler.handleIntent(intent, currentSelectedFolderUri)}
             } else {
